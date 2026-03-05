@@ -201,4 +201,3 @@ authentication-application/
 - Consistency is key - follow these standards across the entire codebase
 - When in doubt, refer to the Spring Boot best practices and Java conventions
 - Keep security as a top priority throughout development
-
