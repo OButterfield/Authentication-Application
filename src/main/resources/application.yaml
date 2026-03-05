@@ -1,3 +1,12 @@
 spring:
   application:
     name: Authentication
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/authentication_db
+      database: authentication_db
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
