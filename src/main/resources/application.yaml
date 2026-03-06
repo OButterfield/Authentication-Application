@@ -3,7 +3,7 @@ spring:
     name: Authentication
   data:
     mongodb:
-      uri: mongodb://localhost:27017/authentication_db
+      uri: mongodb://localhost:27017
       database: authentication_db
 
 server:
