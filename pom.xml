@@ -92,6 +92,10 @@
 								<useSpringBoot3>true</useSpringBoot3>
 								<java8>false</java8>
 								<sourceFolder>src/gen/java</sourceFolder>
+								<apiDocumentationProvider>true</apiDocumentationProvider>
+								<generateModelTests>false</generateModelTests>
+								<generateApiTests>false</generateApiTests>
+								<useTags>true</useTags>
 							</configOptions>
 						</configuration>
 					</execution>
