@@ -6,6 +6,11 @@ spring:
       uri: mongodb://localhost:27017
       database: authentication_db
 
+springdoc:
+  swagger-ui:
+    enabled: true
+    url: /openapi.yml
+
 server:
   port: 8080
   servlet:
