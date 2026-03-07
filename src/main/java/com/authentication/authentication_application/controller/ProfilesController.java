@@ -4,8 +4,10 @@ import com.authentication.authentication_application.api.ProfilesApi;
 import com.authentication.authentication_application.model.CreateProfileRequest;
 import com.authentication.authentication_application.model.Profile;
 import com.authentication.authentication_application.model.ProfileResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -27,9 +29,10 @@ public class ProfilesController implements ProfilesApi {
      */
     @Override
     public ResponseEntity<ProfileResponse> createProfile(CreateProfileRequest createProfileRequest) {
+        // TODO: Validate email and password
+
         // TODO: Implement password hashing with bcrypt
         // TODO: Implement MongoDB repository save
-        // TODO: Add input validation
 
         // Generate a profile with a random UUID
         UUID profileId = UUID.randomUUID();

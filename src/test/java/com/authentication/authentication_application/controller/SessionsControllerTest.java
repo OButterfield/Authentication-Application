@@ -124,4 +124,74 @@ class SessionsControllerTest {
             }
         }
     }
+
+    @Test
+    @DisplayName("Should reject session creation with invalid email format")
+    void shouldRejectSessionCreationWithInvalidEmailFormat() throws Exception {
+        // GIVEN
+        createSessionRequest.setEmail("invalid-email-without-at-symbol");
+        String requestBody = objectMapper.writeValueAsString(createSessionRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/sessions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should reject session creation with null email")
+    void shouldRejectSessionCreationWithNullEmail() throws Exception {
+        // GIVEN
+        createSessionRequest.setEmail(null);
+        String requestBody = objectMapper.writeValueAsString(createSessionRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/sessions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should reject session creation with null password")
+    void shouldRejectSessionCreationWithNullPassword() throws Exception {
+        // GIVEN
+        createSessionRequest.setPassword(null);
+        String requestBody = objectMapper.writeValueAsString(createSessionRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/sessions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should reject session creation with empty email")
+    void shouldRejectSessionCreationWithEmptyEmail() throws Exception {
+        // GIVEN
+        createSessionRequest.setEmail("");
+        String requestBody = objectMapper.writeValueAsString(createSessionRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/sessions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should reject session creation with empty password")
+    void shouldRejectSessionCreationWithEmptyPassword() throws Exception {
+        // GIVEN
+        createSessionRequest.setPassword("");
+        String requestBody = objectMapper.writeValueAsString(createSessionRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/sessions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
 }

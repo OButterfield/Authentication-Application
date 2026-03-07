@@ -124,6 +124,7 @@ components:
     Email:
       type: string
       format: email
+      minLength: 1
       description: User's email address
       example: user@example.com
 

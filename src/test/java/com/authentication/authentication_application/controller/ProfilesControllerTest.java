@@ -109,5 +109,74 @@ class ProfilesControllerTest {
             }
         }
     }
-}
 
+    @Test
+    @DisplayName("Should reject profile creation with invalid email format")
+    void shouldRejectProfileCreationWithInvalidEmailFormat() throws Exception {
+        // GIVEN
+        validRequest.setEmail("invalid-email-without-at-symbol");
+        String requestBody = objectMapper.writeValueAsString(validRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/profiles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should reject profile creation with null email")
+    void shouldRejectProfileCreationWithNullEmail() throws Exception {
+        // GIVEN
+        validRequest.setEmail(null);
+        String requestBody = objectMapper.writeValueAsString(validRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/profiles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should reject profile creation with null password")
+    void shouldRejectProfileCreationWithNullPassword() throws Exception {
+        // GIVEN
+        validRequest.setPassword(null);
+        String requestBody = objectMapper.writeValueAsString(validRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/profiles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should reject profile creation with empty email")
+    void shouldRejectProfileCreationWithEmptyEmail() throws Exception {
+        // GIVEN
+        validRequest.setEmail("");
+        String requestBody = objectMapper.writeValueAsString(validRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/profiles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should reject profile creation with empty password")
+    void shouldRejectProfileCreationWithEmptyPassword() throws Exception {
+        // GIVEN
+        validRequest.setPassword("");
+        String requestBody = objectMapper.writeValueAsString(validRequest);
+
+        // WHEN & THEN
+        mockMvc.perform(post("/profiles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+}

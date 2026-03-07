@@ -4,8 +4,10 @@ import com.authentication.authentication_application.api.SessionsApi;
 import com.authentication.authentication_application.model.CreateSessionRequest;
 import com.authentication.authentication_application.model.Session;
 import com.authentication.authentication_application.model.SessionResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
