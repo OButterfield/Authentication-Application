@@ -145,7 +145,7 @@ Detects common bugs and code quality issues with maximum effort and low threshol
 ### When You Update OpenAPI Spec
 
 1. **Edit** `src/main/resources/openapi.yml`
-2. **Run** `mvn clean compile openapi-generator:generate`
+2. **Run** `mvn clean compile` (cannot run specific openapi-generator:generate task due to known bug)
 3. **Implement** the generated interfaces in your controllers
 4. **Format** with `mvn spotless:apply`
 5. **Validate** with `mvn clean verify`
