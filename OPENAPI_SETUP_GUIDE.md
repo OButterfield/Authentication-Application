@@ -79,10 +79,6 @@ target/generated-sources/openapi/src/gen/java/com/authentication/authentication_
     ├── SessionResponse.java
     ├── Profile.java
     ├── Session.java
-    ├── Email.java
-    ├── Password.java
-    ├── ProfileId.java
-    ├── Timestamp.java
     └── ErrorResponse.java
 ```
 
