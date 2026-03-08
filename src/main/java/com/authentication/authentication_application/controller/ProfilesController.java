@@ -4,10 +4,10 @@ import com.authentication.authentication_application.api.ProfilesApi;
 import com.authentication.authentication_application.model.CreateProfileRequest;
 import com.authentication.authentication_application.model.Profile;
 import com.authentication.authentication_application.model.ProfileResponse;
-import jakarta.validation.Valid;
+import com.authentication.authentication_application.util.HashUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -16,9 +16,13 @@ import java.util.UUID;
  * Controller implementation for user profile creation endpoint.
  * Implements the ProfilesApi interface generated from OpenAPI specification.
  * This allows Spring to handle routing based on the interface's @RequestMapping annotations.
+ * Note we are using constructor injection of the HashUtil component for password hashing.
  */
 @RestController
+@RequiredArgsConstructor
 public class ProfilesController implements ProfilesApi {
+
+    private final HashUtil hashUtil;
 
     /**
      * Creates a new user profile with the provided email and password.
@@ -29,9 +33,8 @@ public class ProfilesController implements ProfilesApi {
      */
     @Override
     public ResponseEntity<ProfileResponse> createProfile(CreateProfileRequest createProfileRequest) {
-        // TODO: Validate email and password
-
         // TODO: Implement password hashing with bcrypt
+        final String hashedPassword = hashUtil.hash(createProfileRequest.getPassword());
         // TODO: Implement MongoDB repository save
 
         // Generate a profile with a random UUID
