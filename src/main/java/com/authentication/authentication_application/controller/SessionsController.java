@@ -4,10 +4,10 @@ import com.authentication.authentication_application.api.SessionsApi;
 import com.authentication.authentication_application.model.CreateSessionRequest;
 import com.authentication.authentication_application.model.Session;
 import com.authentication.authentication_application.model.SessionResponse;
-import jakarta.validation.Valid;
+import com.authentication.authentication_application.util.HashUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
@@ -17,9 +17,13 @@ import java.util.UUID;
  * Controller implementation for user login/session creation endpoint.
  * Implements the SessionsApi interface generated from OpenAPI specification.
  * This allows Spring to handle routing based on the interface's @RequestMapping annotations.
+ * Note we are using constructor injection of the HashUtil component for password hashing.
  */
 @RestController
+@RequiredArgsConstructor
 public class SessionsController implements SessionsApi {
+
+    private final HashUtil hashUtil;
 
     /**
      * Creates a new login session by authenticating user credentials.
@@ -31,6 +35,8 @@ public class SessionsController implements SessionsApi {
     @Override
     public ResponseEntity<SessionResponse> createSession(CreateSessionRequest createSessionRequest) {
         // TODO: Implement password verification with bcrypt
+        final String storedHashedPassword = "storedHashedPassword"; // This should come from the database
+        final boolean passwordMatches = hashUtil.matches(createSessionRequest.getPassword(), storedHashedPassword);
         // TODO: Implement MongoDB repository findByEmail
         // TODO: Add proper authentication logic
         // TODO: Add session token generation
@@ -54,4 +60,3 @@ public class SessionsController implements SessionsApi {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
-
