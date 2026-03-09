@@ -1,61 +1,46 @@
 package com.authentication.authentication_application.controller;
 
 import com.authentication.authentication_application.api.ProfilesApi;
+import com.authentication.authentication_application.exception.AuthenticationApplicationException;
+import com.authentication.authentication_application.exception.DuplicateProfileException;
 import com.authentication.authentication_application.model.CreateProfileRequest;
 import com.authentication.authentication_application.model.Profile;
 import com.authentication.authentication_application.model.ProfileResponse;
 import com.authentication.authentication_application.model.User;
-import com.authentication.authentication_application.repository.UserRepository;
-import com.authentication.authentication_application.util.HashUtil;
+import com.authentication.authentication_application.service.ProfileCreationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 /**
  * Controller implementation for user profile creation endpoint.
  * Implements the ProfilesApi interface generated from OpenAPI specification.
- * This allows Spring to handle routing based on the interface's @RequestMapping annotations.
- * Note we are using constructor injection of the HashUtil component for password hashing.
+ * Delegates business logic to ProfileCreationService.
+ * Exception handling is centralized in GlobalExceptionHandler.
  */
 @RestController
 @RequiredArgsConstructor
 public class ProfilesController implements ProfilesApi {
 
-    private final HashUtil hashUtil;
-
-    private final UserRepository userRepository;
+    private final ProfileCreationService profileCreationService;
 
     /**
      * Creates a new user profile with the provided email and password.
-     * Generates a unique profileId (UUID as String) and stores the user in MongoDB.
+     * Delegates to ProfileCreationService for user creation logic.
+     * Exceptions are handled by GlobalExceptionHandler for consistent error responses.
      *
      * @param createProfileRequest the request containing email and password
      * @return ResponseEntity with status 201 and ProfileResponse containing the new profile
+     * @throws DuplicateProfileException if email or profileId already exists
+     * @throws AuthenticationApplicationException for other authentication errors
      */
     @Override
     public ResponseEntity<ProfileResponse> createProfile(CreateProfileRequest createProfileRequest) {
-        // Hash the password with bcrypt and pepper
-        final String hashedPassword = hashUtil.hash(createProfileRequest.getPassword());
+        // Create user profile via service
+        User savedUser = profileCreationService.createUserProfile(createProfileRequest);
 
-        // Generate a unique profile ID
-        String profileId = UUID.randomUUID().toString();
-        long now = System.currentTimeMillis();
-
-        // Create and save the user to MongoDB
-        User user = User.builder()
-                .profileId(profileId)
-                .email(createProfileRequest.getEmail())
-                .hashedPassword(hashedPassword)
-                .createdAt(now)
-                .updatedAt(now)
-                .build();
-
-        User savedUser = userRepository.save(user);
-
-        // Build the response
+        // Build success response
         Profile profile = new Profile();
         profile.setProfileId(savedUser.getProfileId());
         profile.setEmail(savedUser.getEmail());

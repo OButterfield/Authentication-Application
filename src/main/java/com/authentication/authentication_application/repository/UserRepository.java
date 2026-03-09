@@ -48,5 +48,13 @@ public interface UserRepository extends MongoRepository<User, String> {
      * @return true if a user with this profile ID exists, false otherwise
      */
     boolean existsByProfileId(String profileId);
+
+    /**
+     * Deletes a user by email address.
+     * Used primarily for test cleanup.
+     *
+     * @param email the user's email address
+     */
+    void deleteByEmail(String email);
 }
 

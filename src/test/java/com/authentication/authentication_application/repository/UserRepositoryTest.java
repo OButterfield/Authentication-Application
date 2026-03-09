@@ -55,7 +55,6 @@ class UserRepositoryTest {
     @AfterEach
     void tearDown() {
         // Delete only the users created during this test
-        System.out.println(createdUserIds);
         for (String userId : createdUserIds) {
             userRepository.deleteById(userId);
         }

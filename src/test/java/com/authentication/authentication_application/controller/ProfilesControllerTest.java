@@ -2,7 +2,9 @@ package com.authentication.authentication_application.controller;
 
 import com.authentication.authentication_application.model.CreateProfileRequest;
 import com.authentication.authentication_application.model.ProfileResponse;
+import com.authentication.authentication_application.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -21,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Integration tests for ProfilesController.
  * Tests the user profile creation endpoint.
+ * Cleans up created records in the database after each test.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -35,13 +41,26 @@ class ProfilesControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private CreateProfileRequest validRequest;
+    private List<String> createdUserEmails;
 
     @BeforeEach
     void setUp() {
+        createdUserEmails = new ArrayList<>();
         validRequest = new CreateProfileRequest();
         validRequest.setEmail("test@example.com");
         validRequest.setPassword("SecurePassword123!");
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Clean up only the users created during this test
+        for (String email : createdUserEmails) {
+            userRepository.deleteByEmail(email);
+        }
     }
 
     @Test
@@ -70,6 +89,8 @@ class ProfilesControllerTest {
         assert response.getData() != null;
         assert response.getData().getProfileId() != null;
         assert response.getData().getEmail().equals("test@example.com");
+
+        createdUserEmails.add(validRequest.getEmail());
     }
 
     @Test
@@ -98,6 +119,8 @@ class ProfilesControllerTest {
             responses[index] = objectMapper.readValue(
                     result.getResponse().getContentAsString(),
                     ProfileResponse.class);
+
+            createdUserEmails.add(testEmail);
             index++;
         }
 
@@ -108,6 +131,28 @@ class ProfilesControllerTest {
                         .equals(responses[j].getData().getProfileId());
             }
         }
+    }
+
+    @Test
+    @DisplayName("Should reject profile creation with duplicate email")
+    void shouldRejectProfileCreationWithDuplicateEmail() throws Exception {
+        // GIVEN - Create first profile
+        String requestBody = objectMapper.writeValueAsString(validRequest);
+        mockMvc.perform(post("/profiles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isCreated());
+
+        createdUserEmails.add(validRequest.getEmail());
+
+        // WHEN & THEN - Try to create another profile with same email
+        // Should return 400 Bad Request with generic message to prevent email enumeration
+        mockMvc.perform(post("/profiles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("INVALID_INPUT"))
+                .andExpect(jsonPath("$.message").value("Email or password does not meet requirements"));
     }
 
     @Test
