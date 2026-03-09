@@ -1,58 +1,48 @@
 package com.authentication.authentication_application.controller;
 
 import com.authentication.authentication_application.api.SessionsApi;
+import com.authentication.authentication_application.exception.InvalidCredentialsException;
 import com.authentication.authentication_application.model.CreateSessionRequest;
 import com.authentication.authentication_application.model.Session;
 import com.authentication.authentication_application.model.SessionResponse;
-import com.authentication.authentication_application.util.HashUtil;
+import com.authentication.authentication_application.model.User;
+import com.authentication.authentication_application.service.SessionCreationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 /**
  * Controller implementation for user login/session creation endpoint.
  * Implements the SessionsApi interface generated from OpenAPI specification.
- * This allows Spring to handle routing based on the interface's @RequestMapping annotations.
- * Note we are using constructor injection of the HashUtil component for password hashing.
+ * Delegates business logic to SessionCreationService.
+ * Exception handling is centralized in GlobalExceptionHandler.
  */
 @RestController
 @RequiredArgsConstructor
 public class SessionsController implements SessionsApi {
 
-    private final HashUtil hashUtil;
-
-    private static final int oneHourInMilliseconds = 60 * 60 * 1000;
+    private final SessionCreationService sessionCreationService;
 
     /**
      * Creates a new login session by authenticating user credentials.
-     * Validates email and password against stored user in MongoDB.
+     * Delegates to SessionCreationService for authentication logic.
+     * Exceptions are handled by GlobalExceptionHandler for consistent error responses.
      *
      * @param createSessionRequest the request containing email and password
      * @return ResponseEntity with status 200 and SessionResponse containing session info
+     * @throws InvalidCredentialsException if email not found or password is incorrect
      */
     @Override
     public ResponseEntity<SessionResponse> createSession(CreateSessionRequest createSessionRequest) {
-        // TODO: Implement password verification with bcrypt
-        final String storedHashedPassword = "storedHashedPassword"; // This should come from the database
-        final boolean passwordMatches = hashUtil.matches(createSessionRequest.getPassword(), storedHashedPassword);
-        // TODO: Implement MongoDB repository findByEmail
-        // TODO: Add proper authentication logic
-        // TODO: Add session token generation
+        // Authenticate user via service
+        User authenticatedUser = sessionCreationService.createSession(createSessionRequest);
 
-        // For now, return a mock session
-        String email = createSessionRequest.getEmail();
-        String profileId = UUID.randomUUID().toString();
-
-        // Set expiry to 1 hour from now (in epoch milliseconds)
-        long expiryTime = System.currentTimeMillis() + (oneHourInMilliseconds);
-
+        // Build session response
         Session session = new Session();
-        session.setProfileId(profileId);
-        session.setEmail(email);
-        session.setExpiryTime(expiryTime);
+        session.setProfileId(authenticatedUser.getProfileId());
+        session.setEmail(authenticatedUser.getEmail());
+        session.setExpiryTime(authenticatedUser.getUpdatedAt());
 
         SessionResponse response = new SessionResponse();
         response.setData(session);
@@ -61,5 +51,3 @@ public class SessionsController implements SessionsApi {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
-
-
