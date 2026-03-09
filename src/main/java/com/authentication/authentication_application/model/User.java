@@ -29,13 +29,11 @@ public class User {
     /**
      * Unique profile identifier assigned at account creation.
      */
-    @Indexed(unique = true)
     private String profileId;
 
     /**
      * User's email address - unique and indexed for fast lookups.
      */
-    @Indexed(unique = true)
     private String email;
 
     /**
@@ -46,7 +44,6 @@ public class User {
     /**
      * Timestamp of account creation (milliseconds since Unix epoch).
      */
-    @Indexed(unique = false)
     private Long createdAt;
 
     /**
