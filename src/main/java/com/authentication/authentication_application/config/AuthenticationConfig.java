@@ -6,22 +6,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Authentication configuration for the application.
- * Loads pepper from environment variables and provides HashUtil bean.
+ * Authentication configuration for the application. Loads pepper from
+ * environment variables and provides HashUtil bean.
  */
 @Configuration
 public class AuthenticationConfig {
 
-    /**
-     * Creates a HashUtil bean with the pepper from configuration.
-     *
-     * @param pepper the pepper value from app.security.pepper configuration
-     * @return configured HashUtil instance
-     */
-    @Bean
-    public HashUtil hashUtil(@Value("${app.security.pepper}") String pepper) {
-        return new HashUtil(pepper);
-    }
+	/**
+	 * Creates a HashUtil bean with the pepper from configuration.
+	 *
+	 * @param pepper
+	 *            the pepper value from app.security.pepper configuration
+	 * @return configured HashUtil instance
+	 */
+	@Bean
+	public HashUtil hashUtil(@Value("${app.security.pepper}") String pepper) {
+		return new HashUtil(pepper);
+	}
 }
-
-

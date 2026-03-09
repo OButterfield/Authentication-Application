@@ -14,41 +14,45 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Controller implementation for user profile creation endpoint.
- * Implements the ProfilesApi interface generated from OpenAPI specification.
- * Delegates business logic to ProfileCreationService.
- * Exception handling is centralized in GlobalExceptionHandler.
+ * Controller implementation for user profile creation endpoint. Implements the
+ * ProfilesApi interface generated from OpenAPI specification. Delegates
+ * business logic to ProfileCreationService. Exception handling is centralized
+ * in GlobalExceptionHandler.
  */
 @RestController
 @RequiredArgsConstructor
 public class ProfilesController implements ProfilesApi {
 
-    private final ProfileCreationService profileCreationService;
+	private final ProfileCreationService profileCreationService;
 
-    /**
-     * Creates a new user profile with the provided email and password.
-     * Delegates to ProfileCreationService for user creation logic.
-     * Exceptions are handled by GlobalExceptionHandler for consistent error responses.
-     *
-     * @param createProfileRequest the request containing email and password
-     * @return ResponseEntity with status 201 and ProfileResponse containing the new profile
-     * @throws DuplicateProfileException if email or profileId already exists
-     * @throws AuthenticationApplicationException for other authentication errors
-     */
-    @Override
-    public ResponseEntity<ProfileResponse> createProfile(CreateProfileRequest createProfileRequest) {
-        // Create user profile via service
-        User savedUser = profileCreationService.createUserProfile(createProfileRequest);
+	/**
+	 * Creates a new user profile with the provided email and password. Delegates to
+	 * ProfileCreationService for user creation logic. Exceptions are handled by
+	 * GlobalExceptionHandler for consistent error responses.
+	 *
+	 * @param createProfileRequest
+	 *            the request containing email and password
+	 * @return ResponseEntity with status 201 and ProfileResponse containing the new
+	 *         profile
+	 * @throws DuplicateProfileException
+	 *             if email or profileId already exists
+	 * @throws AuthenticationApplicationException
+	 *             for other authentication errors
+	 */
+	@Override
+	public ResponseEntity<ProfileResponse> createProfile(CreateProfileRequest createProfileRequest) {
+		// Create user profile via service
+		User savedUser = profileCreationService.createUserProfile(createProfileRequest);
 
-        // Build success response
-        Profile profile = new Profile();
-        profile.setProfileId(savedUser.getProfileId());
-        profile.setEmail(savedUser.getEmail());
+		// Build success response
+		Profile profile = new Profile();
+		profile.setProfileId(savedUser.getProfileId());
+		profile.setEmail(savedUser.getEmail());
 
-        ProfileResponse response = new ProfileResponse();
-        response.setData(profile);
-        response.setMessage("User created successfully");
+		ProfileResponse response = new ProfileResponse();
+		response.setData(profile);
+		response.setMessage("User created successfully");
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+		return new ResponseEntity<>(response, HttpStatus.CREATED);
+	}
 }

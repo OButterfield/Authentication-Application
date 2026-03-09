@@ -10,25 +10,27 @@ import lombok.Getter;
 @Getter
 public class DuplicateProfileException extends AuthenticationApplicationException {
 
-    /**
-     * -- GETTER --
-     *  Gets the field that caused the duplicate.
-     *
-     * @return the field name (email or profileId)
-     */
-    private final String field;
+	/**
+	 * -- GETTER -- Gets the field that caused the duplicate.
+	 *
+	 * @return the field name (email or profileId)
+	 */
+	private final String field;
 
-    /**
-     * Constructs a DuplicateProfileException.
-     *
-     * @param errorCode the error code identifier (DUPLICATE_EMAIL or DUPLICATE_PROFILE_ID)
-     * @param field the field that caused the duplicate (email or profileId)
-     * @param message the human-readable error message
-     */
-    public DuplicateProfileException(String errorCode, String field, String message) {
-        super(errorCode, message);
-        this.field = field;
-    }
+	/**
+	 * Constructs a DuplicateProfileException.
+	 *
+	 * @param errorCode
+	 *            the error code identifier (DUPLICATE_EMAIL or
+	 *            DUPLICATE_PROFILE_ID)
+	 * @param field
+	 *            the field that caused the duplicate (email or profileId)
+	 * @param message
+	 *            the human-readable error message
+	 */
+	public DuplicateProfileException(String errorCode, String field, String message) {
+		super(errorCode, message);
+		this.field = field;
+	}
 
 }
-

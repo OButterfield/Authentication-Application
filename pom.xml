@@ -150,6 +150,7 @@
 					<consoleOutput>true</consoleOutput>
 					<failsOnError>true</failsOnError>
 					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+					<propertyExpansion>config_loc=src/main/resources;org.checkstyle.google.suppressionfilter.config=checkstyle-suppressions.xml</propertyExpansion>
 				</configuration>
 				<dependencies>
 					<dependency>
