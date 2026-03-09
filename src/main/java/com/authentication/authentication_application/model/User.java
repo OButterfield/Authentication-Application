@@ -8,9 +8,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * User document entity stored in MongoDB.
- * Represents a user account with authentication credentials.
+ * Represents a user account with authentication credentials and active sessions.
  * Timestamps are stored as milliseconds since Unix epoch (January 1, 1970 UTC).
  */
 @Data
@@ -50,5 +53,12 @@ public class User {
      * Timestamp of last account update (milliseconds since Unix epoch).
      */
     private Long updatedAt;
+
+    /**
+     * Array of active user sessions.
+     * Each session contains a unique sessionId and validUntil expiry time.
+     */
+    @Builder.Default
+    private List<UserSession> sessions = new ArrayList<>();
 }
 

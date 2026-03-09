@@ -13,39 +13,33 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
- * Service for handling user session creation and authentication logic.
- * Encapsulates email lookup, password verification, and session creation.
- * Provides consistent error handling for invalid credentials.
+ * Service for authenticating user credentials.
+ * Responsible only for email lookup and password verification.
+ * Follows Single Responsibility Principle by focusing solely on authentication logic.
  */
 @Service
 @RequiredArgsConstructor
-public class SessionCreationService {
+public class UserAuthenticationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SessionCreationService.class);
-    private static final long SESSION_DURATION_MILLISECONDS = 60 * 60 * 1000; // 1 hour
+    private static final Logger logger = LoggerFactory.getLogger(UserAuthenticationService.class);
 
     private final UserRepository userRepository;
     private final HashUtil hashUtil;
 
     /**
-     * Creates a new session by authenticating user credentials.
-     * Verifies email exists and password matches stored hash.
-     * Updates the user's updatedAt timestamp to represent session expiry.
+     * Authenticates a user by verifying email and password credentials from the request.
+     * Responsible only for credential validation.
      *
-     * @param createSessionRequest the request containing email and password
-     * @return the authenticated User entity with updated session expiry time
+     * @param createSessionRequest the session request containing email and password
+     * @return the authenticated User entity
      * @throws InvalidCredentialsException if email not found or password incorrect
      */
-    public User createSession(CreateSessionRequest createSessionRequest) {
+    public User authenticate(CreateSessionRequest createSessionRequest) {
         // Find user by email
         User user = findUserByEmail(createSessionRequest.getEmail());
 
         // Verify password matches
         verifyPassword(createSessionRequest.getPassword(), user.getHashedPassword());
-
-        // Update session expiry time (using updatedAt field to store expiry)
-        long sessionExpiryTime = System.currentTimeMillis() + SESSION_DURATION_MILLISECONDS;
-        user.setUpdatedAt(sessionExpiryTime);
 
         return user;
     }

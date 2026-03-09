@@ -66,7 +66,7 @@ class SessionsControllerTest {
     }
 
     @Test
-    @DisplayName("Should return 200 OK with valid profileId, email, epoch milliseconds expiryTime, and success message")
+    @DisplayName("Should return 200 OK with valid sessionId, profileId, email, epoch milliseconds expiryTime, and success message")
     void shouldCreateSessionWithAllRequiredFieldsAndValidFormats() throws Exception {
         // GIVEN - First create a user profile
         CreateSessionRequest profileRequest = new CreateSessionRequest();
@@ -92,6 +92,8 @@ class SessionsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data").exists())
+                .andExpect(jsonPath("$.data.sessionId", notNullValue()))
+                .andExpect(jsonPath("$.data.sessionId").value(matchesPattern(UUID_PATTERN)))
                 .andExpect(jsonPath("$.data.profileId", notNullValue()))
                 .andExpect(jsonPath("$.data.profileId").value(matchesPattern(UUID_PATTERN)))
                 .andExpect(jsonPath("$.data.email").value(VALID_EMAIL))
@@ -100,11 +102,13 @@ class SessionsControllerTest {
                 .andExpect(jsonPath("$.message").value("Login successful"))
                 .andReturn();
 
-        // Verify deserialization and expiry time is in the future
+        // Verify deserialization and expiryTime is in the future
         String content = result.getResponse().getContentAsString();
         SessionResponse response = objectMapper.readValue(content, SessionResponse.class);
         assert response.getData() != null;
         assert response.getData().getExpiryTime() > beforeRequest;
+        assert response.getData().getProfileId() != null;
+        assert response.getData().getEmail().equals(VALID_EMAIL);
     }
 
     @Test

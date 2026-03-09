@@ -67,7 +67,7 @@ paths:
       tags:
         - Sessions
       summary: Create a login session
-      description: Authenticates a user by validating email and password credentials. Returns user profileId on successful authentication.
+      description: Authenticates a user by validating email and password credentials. Creates and returns a new session with sessionId and expiryTime, aswell as user profileId.
       operationId: createSession
       requestBody:
         required: true
@@ -80,13 +80,14 @@ paths:
               password: SecurePassword123!
       responses:
         '200':
-          description: User authenticated successfully
+          description: User authenticated successfully and session created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SessionResponse'
               example:
                 data:
+                  sessionId: 550e8400-e29b-41d4-a716-446655440001
                   profileId: 550e8400-e29b-41d4-a716-446655440000
                   email: user@example.com
                   expiryTime: 1709943109266
@@ -134,6 +135,11 @@ components:
       description: User's password (minimum 8 characters)
       minLength: 8
       example: SecurePassword123!
+
+    SessionId:
+      type: string
+      description: Unique identifier for the session (UUID as string)
+      example: 550e8400-e29b-41d4-a716-446655440001
 
     ProfileId:
       type: string
@@ -203,6 +209,8 @@ components:
           $ref: '#/components/schemas/ProfileId'
         email:
           $ref: '#/components/schemas/Email'
+        sessionId:
+          $ref: '#/components/schemas/SessionId'
         expiryTime:
           $ref: '#/components/schemas/Timestamp'
 

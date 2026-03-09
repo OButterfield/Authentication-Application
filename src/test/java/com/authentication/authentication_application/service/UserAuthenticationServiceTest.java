@@ -12,18 +12,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for SessionCreationService.
- * Tests user authentication, password verification, and session creation.
+ * Unit tests for UserAuthenticationService.
+ * Tests user authentication via email lookup and password verification.
  */
 @ExtendWith(MockitoExtension.class)
-@DisplayName("SessionCreationService Tests")
-class SessionCreationServiceTest {
+@DisplayName("UserAuthenticationService Tests")
+class UserAuthenticationServiceTest {
 
     // Test constants
     private static final String TEST_EMAIL = "test@example.com";
@@ -32,8 +33,6 @@ class SessionCreationServiceTest {
     private static final String TEST_PROFILE_ID = "550e8400-e29b-41d4-a716-446655440000";
     private static final String MONGO_ID = "mongoId";
     private static final long TEST_TIMESTAMP = 1709939509266L;
-    private static final int SESSION_EXPIRY_HOURS = 1;
-    private static final int MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 
     // Expected exception properties
     private static final String INVALID_CREDENTIALS_CODE = "INVALID_CREDENTIALS";
@@ -45,22 +44,20 @@ class SessionCreationServiceTest {
     @Mock
     private HashUtil hashUtil;
 
-    private SessionCreationService sessionCreationService;
-
+    private UserAuthenticationService userAuthenticationService;
     private CreateSessionRequest validRequest;
 
     @BeforeEach
     void setUp() {
-        sessionCreationService = new SessionCreationService(userRepository, hashUtil);
-
+        userAuthenticationService = new UserAuthenticationService(userRepository, hashUtil);
         validRequest = new CreateSessionRequest();
         validRequest.setEmail(TEST_EMAIL);
         validRequest.setPassword(TEST_PASSWORD);
     }
 
     @Test
-    @DisplayName("Should successfully create session with valid email and password")
-    void shouldCreateSessionWithValidCredentials() {
+    @DisplayName("Should successfully authenticate user with valid email and password")
+    void shouldAuthenticateUserWithValidCredentials() {
         // GIVEN
         User storedUser = User.builder()
                 .id(MONGO_ID)
@@ -69,13 +66,14 @@ class SessionCreationServiceTest {
                 .hashedPassword(HASHED_PASSWORD)
                 .createdAt(TEST_TIMESTAMP)
                 .updatedAt(TEST_TIMESTAMP)
+                .sessions(new ArrayList<>())
                 .build();
 
         when(userRepository.findByEmail(TEST_EMAIL)).thenReturn(Optional.of(storedUser));
         when(hashUtil.matches(TEST_PASSWORD, HASHED_PASSWORD)).thenReturn(true);
 
         // WHEN
-        User result = sessionCreationService.createSession(validRequest);
+        User result = userAuthenticationService.authenticate(validRequest);
 
         // THEN
         assertNotNull(result);
@@ -92,7 +90,7 @@ class SessionCreationServiceTest {
         // WHEN & THEN
         InvalidCredentialsException exception = assertThrows(
                 InvalidCredentialsException.class,
-                () -> sessionCreationService.createSession(validRequest)
+                () -> userAuthenticationService.authenticate(validRequest)
         );
 
         assertEquals(INVALID_CREDENTIALS_CODE, exception.getErrorCode());
@@ -110,6 +108,7 @@ class SessionCreationServiceTest {
                 .hashedPassword(HASHED_PASSWORD)
                 .createdAt(TEST_TIMESTAMP)
                 .updatedAt(TEST_TIMESTAMP)
+                .sessions(new ArrayList<>())
                 .build();
 
         when(userRepository.findByEmail(TEST_EMAIL)).thenReturn(Optional.of(storedUser));
@@ -118,65 +117,12 @@ class SessionCreationServiceTest {
         // WHEN & THEN
         InvalidCredentialsException exception = assertThrows(
                 InvalidCredentialsException.class,
-                () -> sessionCreationService.createSession(validRequest)
+                () -> userAuthenticationService.authenticate(validRequest)
         );
 
         assertEquals(INVALID_CREDENTIALS_CODE, exception.getErrorCode());
         assertEquals(INVALID_CREDENTIALS_MESSAGE, exception.getMessage());
     }
-
-    @Test
-    @DisplayName("Should calculate correct session expiry time (1 hour from now)")
-    void shouldCalculateCorrectSessionExpiryTime() {
-        // GIVEN
-        User storedUser = User.builder()
-                .id(MONGO_ID)
-                .profileId(TEST_PROFILE_ID)
-                .email(TEST_EMAIL)
-                .hashedPassword(HASHED_PASSWORD)
-                .createdAt(TEST_TIMESTAMP)
-                .updatedAt(TEST_TIMESTAMP)
-                .build();
-
-        long beforeCall = System.currentTimeMillis();
-        when(userRepository.findByEmail(TEST_EMAIL)).thenReturn(Optional.of(storedUser));
-        when(hashUtil.matches(TEST_PASSWORD, HASHED_PASSWORD)).thenReturn(true);
-
-        // WHEN
-        User result = sessionCreationService.createSession(validRequest);
-        long afterCall = System.currentTimeMillis();
-
-        // THEN - Verify expiry is approximately 1 hour from call time
-        long expectedExpiryMin = beforeCall + (SESSION_EXPIRY_HOURS * MILLISECONDS_PER_HOUR);
-        long expectedExpiryMax = afterCall + (SESSION_EXPIRY_HOURS * MILLISECONDS_PER_HOUR);
-
-        assertNotNull(result);
-        // Allow 100ms tolerance for test execution time
-        assertTrue(result.getUpdatedAt() >= expectedExpiryMin - 100 && result.getUpdatedAt() <= expectedExpiryMax + 100);
-    }
-
-    @Test
-    @DisplayName("Should return user with email preserved from stored profile")
-    void shouldPreserveEmailFromStoredProfile() {
-        // GIVEN
-        User storedUser = User.builder()
-                .id(MONGO_ID)
-                .profileId(TEST_PROFILE_ID)
-                .email(TEST_EMAIL)
-                .hashedPassword(HASHED_PASSWORD)
-                .createdAt(TEST_TIMESTAMP)
-                .updatedAt(TEST_TIMESTAMP)
-                .build();
-
-        when(userRepository.findByEmail(TEST_EMAIL)).thenReturn(Optional.of(storedUser));
-        when(hashUtil.matches(TEST_PASSWORD, HASHED_PASSWORD)).thenReturn(true);
-
-        // WHEN
-        User result = sessionCreationService.createSession(validRequest);
-
-        // THEN
-        assertEquals(TEST_EMAIL, result.getEmail());
-        assertEquals(TEST_PROFILE_ID, result.getProfileId());
-    }
 }
+
 
