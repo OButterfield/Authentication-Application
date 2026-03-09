@@ -20,7 +20,7 @@ paths:
       tags:
         - Profiles
       summary: Create a new user profile
-      description: Creates a new user account with a unique UUID profileId.
+      description: Creates a new user account with a unique UUID profileId (as string).
       operationId: createProfile
       requestBody:
         required: true
@@ -89,7 +89,7 @@ paths:
                 data:
                   profileId: 550e8400-e29b-41d4-a716-446655440000
                   email: user@example.com
-                  expiryTime: 2024-12-09T14:11:49.266Z
+                  expiryTime: 1709943109266
                 message: Login successful
         '400':
           description: Invalid input (missing email or password)
@@ -137,15 +137,14 @@ components:
 
     ProfileId:
       type: string
-      format: uuid
-      description: Unique identifier for the user profile
+      description: Unique identifier for the user profile (UUID as string)
       example: 550e8400-e29b-41d4-a716-446655440000
 
     Timestamp:
-      type: string
-      format: date-time
-      description: ISO 8601 UTC timestamp
-      example: 2024-12-09T14:11:49.266Z
+      type: integer
+      format: int64
+      description: Unix epoch timestamp in milliseconds (milliseconds since January 1, 1970 UTC)
+      example: 1709939509266
 
     CreateProfileRequest:
       type: object

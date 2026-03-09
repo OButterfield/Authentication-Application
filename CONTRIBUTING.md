@@ -116,7 +116,7 @@ Example: `feature/user-login-endpoint`, `bugfix/password-hashing-issue`
 feat: Implement user creation endpoint
 
 - Create UserController with POST /users endpoint
-- Generate UUID profileId for new users
+- Generate UUID (as string) profileId for new users
 - Store user details in MongoDB
 - Add input validation for email and password
 

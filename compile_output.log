@@ -1,0 +1,78 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------< com.authentication:authentication-application >------------
+[INFO] Building Authentication 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- openapi-generator:7.2.0:generate (default) @ authentication-application ---
+[INFO] Generating with dryRun=false
+[INFO] No .openapi-generator-ignore file found.
+[INFO] OpenAPI Generator: spring (server)
+[INFO] Generator 'spring' is considered stable.
+[INFO] ----------------------------------
+[INFO] Environment variable JAVA_POST_PROCESS_FILE not defined so the Java code may not be properly formatted. To define it, try 'export JAVA_POST_PROCESS_FILE="/usr/local/bin/clang-format -i"' (Linux/Mac)
+[INFO] NOTE: To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).
+[INFO] Invoker Package Name, originally not set, is now derived from api package name: com.authentication.authentication_application
+[INFO] Processing operation createProfile
+[INFO] Processing operation createSession
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/model/CreateProfileRequest.java
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/model/CreateSessionRequest.java
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/model/ErrorResponse.java
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/model/Profile.java
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/model/ProfileResponse.java
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/model/Session.java
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/model/SessionResponse.java
+[WARNING] Ignoring complex example on request body
+[WARNING] Ignoring complex example on request body
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/api/ProfilesApi.java
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/api/SessionsApi.java
+[INFO] Skipping generation of Webhooks.
+[INFO] Skipped /Users/oliver/authentication-application/target/generated-sources/openapi/pom.xml (Skipped by supportingFiles options supplied by user.)
+[INFO] Skipped /Users/oliver/authentication-application/target/generated-sources/openapi/README.md (Skipped by supportingFiles options supplied by user.)
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/src/gen/java/com/authentication/authentication_application/api/ApiUtil.java
+[INFO] Skipped /Users/oliver/authentication-application/target/generated-sources/openapi/.openapi-generator-ignore (Skipped by supportingFiles options supplied by user.)
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/.openapi-generator/VERSION
+[INFO] writing file /Users/oliver/authentication-application/target/generated-sources/openapi/.openapi-generator/FILES
+################################################################################
+# Thanks for using OpenAPI Generator.                                          #
+# Please consider donation to help us maintain this project 🙏                 #
+# https://opencollective.com/openapi_generator/donate                          #
+################################################################################
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ authentication-application ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ authentication-application ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 19 source files with javac [debug parameters release 21] to target/classes
+[INFO] Annotation processing is enabled because one or more processors were found
+  on the class path. A future release of javac may disable annotation processing
+  unless at least one processor is specified by name (-processor), or a search
+  path is specified (--processor-path, --processor-module-path), or annotation
+  processing is enabled explicitly (-proc:only, -proc:full).
+  Use -Xlint:-options to suppress this message.
+  Use -proc:none to disable annotation processing.
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /Users/oliver/authentication-application/src/main/java/com/authentication/authentication_application/config/MongoDbConfig.java:[30,90] <identifier> expected
+[INFO] 1 error
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.539 s
+[INFO] Finished at: 2026-03-08T16:30:39Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.1:compile (default-compile) on project authentication-application: Compilation failure
+[ERROR] /Users/oliver/authentication-application/src/main/java/com/authentication/authentication_application/config/MongoDbConfig.java:[30,90] <identifier> expected
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

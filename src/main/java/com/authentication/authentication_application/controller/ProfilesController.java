@@ -4,6 +4,8 @@ import com.authentication.authentication_application.api.ProfilesApi;
 import com.authentication.authentication_application.model.CreateProfileRequest;
 import com.authentication.authentication_application.model.Profile;
 import com.authentication.authentication_application.model.ProfileResponse;
+import com.authentication.authentication_application.model.User;
+import com.authentication.authentication_application.repository.UserRepository;
 import com.authentication.authentication_application.util.HashUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,26 +26,39 @@ public class ProfilesController implements ProfilesApi {
 
     private final HashUtil hashUtil;
 
+    private final UserRepository userRepository;
+
     /**
      * Creates a new user profile with the provided email and password.
-     * Generates a unique UUID profileId and stores the user in MongoDB.
+     * Generates a unique profileId (UUID as String) and stores the user in MongoDB.
      *
      * @param createProfileRequest the request containing email and password
      * @return ResponseEntity with status 201 and ProfileResponse containing the new profile
      */
     @Override
     public ResponseEntity<ProfileResponse> createProfile(CreateProfileRequest createProfileRequest) {
-        // TODO: Implement password hashing with bcrypt
+        // Hash the password with bcrypt and pepper
         final String hashedPassword = hashUtil.hash(createProfileRequest.getPassword());
-        // TODO: Implement MongoDB repository save
 
-        // Generate a profile with a random UUID
-        UUID profileId = UUID.randomUUID();
-        String email = createProfileRequest.getEmail();
+        // Generate a unique profile ID
+        String profileId = UUID.randomUUID().toString();
+        long now = System.currentTimeMillis();
 
+        // Create and save the user to MongoDB
+        User user = User.builder()
+                .profileId(profileId)
+                .email(createProfileRequest.getEmail())
+                .hashedPassword(hashedPassword)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+
+        User savedUser = userRepository.save(user);
+
+        // Build the response
         Profile profile = new Profile();
-        profile.setProfileId(profileId);
-        profile.setEmail(email);
+        profile.setProfileId(savedUser.getProfileId());
+        profile.setEmail(savedUser.getEmail());
 
         ProfileResponse response = new ProfileResponse();
         response.setData(profile);
@@ -52,4 +67,3 @@ public class ProfilesController implements ProfilesApi {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }
-

@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -24,6 +23,8 @@ import java.util.UUID;
 public class SessionsController implements SessionsApi {
 
     private final HashUtil hashUtil;
+
+    private static final int oneHourInMilliseconds = 60 * 60 * 1000;
 
     /**
      * Creates a new login session by authenticating user credentials.
@@ -43,10 +44,10 @@ public class SessionsController implements SessionsApi {
 
         // For now, return a mock session
         String email = createSessionRequest.getEmail();
-        UUID profileId = UUID.randomUUID();
+        String profileId = UUID.randomUUID().toString();
 
-        // Set expiry to 1 hour from now
-        OffsetDateTime expiryTime = OffsetDateTime.now().plusHours(1);
+        // Set expiry to 1 hour from now (in epoch milliseconds)
+        long expiryTime = System.currentTimeMillis() + (oneHourInMilliseconds);
 
         Session session = new Session();
         session.setProfileId(profileId);
@@ -60,3 +61,5 @@ public class SessionsController implements SessionsApi {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
+
+
