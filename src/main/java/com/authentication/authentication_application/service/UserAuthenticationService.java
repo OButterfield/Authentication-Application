@@ -37,10 +37,8 @@ public class UserAuthenticationService {
 	 *             if email not found or password incorrect
 	 */
 	public User authenticate(CreateSessionRequest createSessionRequest) {
-		// Find user by email
 		User user = findUserByEmail(createSessionRequest.getEmail());
 
-		// Verify password matches
 		verifyPassword(createSessionRequest.getPassword(), user.getHashedPassword());
 
 		return user;

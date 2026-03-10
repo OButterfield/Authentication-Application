@@ -41,10 +41,8 @@ public class ProfilesController implements ProfilesApi {
 	 */
 	@Override
 	public ResponseEntity<ProfileResponse> createProfile(CreateProfileRequest createProfileRequest) {
-		// Create user profile via service
 		User savedUser = profileCreationService.createUserProfile(createProfileRequest);
 
-		// Build success response
 		Profile profile = new Profile();
 		profile.setProfileId(savedUser.getProfileId());
 		profile.setEmail(savedUser.getEmail());

@@ -39,13 +39,10 @@ public class ProfileCreationService {
 	 *             if a user with this email already exists
 	 */
 	public User createUserProfile(CreateProfileRequest createProfileRequest) {
-		// Hash the password with bcrypt and pepper
 		final String hashedPassword = hashUtil.hash(createProfileRequest.getPassword());
 
-		// Build the user entity
 		User user = buildUserFromRequest(createProfileRequest, hashedPassword);
 
-		// Save to MongoDB and handle duplicate email
 		return saveUserToDatabase(user);
 	}
 

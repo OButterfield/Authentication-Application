@@ -44,7 +44,6 @@ public class HashUtil {
 			throw new IllegalArgumentException("Plain text cannot be null");
 		}
 
-		// Append pepper to the plain text before hashing
 		String textWithPepper = plainText + pepper;
 
 		// BCrypt generates a new salt automatically and includes it in the hash
@@ -72,7 +71,6 @@ public class HashUtil {
 			throw new IllegalArgumentException("Hash cannot be null");
 		}
 
-		// Append pepper to the plain text before verification
 		String textWithPepper = plainText + pepper;
 
 		// BCrypt automatically extracts the salt from the hash and compares

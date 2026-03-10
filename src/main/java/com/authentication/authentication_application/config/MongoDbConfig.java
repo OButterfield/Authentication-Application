@@ -35,15 +35,12 @@ public class MongoDbConfig {
 		try {
 			IndexOperations indexOps = mongoTemplate.indexOps(User.class);
 
-			// Create unique index on email field
 			indexOps.ensureIndex(new Index().on("email", Sort.Direction.ASC).unique());
 			logger.info("Created unique index on email field");
 
-			// Create unique index on profileId field
 			indexOps.ensureIndex(new Index().on("profileId", Sort.Direction.ASC).unique());
 			logger.info("Created unique index on profileId field");
 
-			// Create index on createdAt for sorting recent accounts
 			indexOps.ensureIndex(new Index().on("createdAt", Sort.Direction.DESC));
 			logger.info("Created index on createdAt field");
 

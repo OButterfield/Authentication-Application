@@ -62,19 +62,16 @@ public class SessionsController implements SessionsApi {
 	 *         expiryTime
 	 */
 	private SessionResponse buildSessionResponse(User userWithSession) {
-		// Get the most recently created session (last element in sessions array)
 		int lastSessionIndex = userWithSession.getSessions().size() - 1;
 		String sessionId = userWithSession.getSessions().get(lastSessionIndex).getSessionId();
 		Long expiryTime = userWithSession.getSessions().get(lastSessionIndex).getExpiryTime();
 
-		// Build session data object
 		Session session = new Session();
 		session.setSessionId(sessionId);
 		session.setProfileId(userWithSession.getProfileId());
 		session.setEmail(userWithSession.getEmail());
 		session.setExpiryTime(expiryTime);
 
-		// Build and return response
 		SessionResponse response = new SessionResponse();
 		response.setData(session);
 		response.setMessage("Login successful");
