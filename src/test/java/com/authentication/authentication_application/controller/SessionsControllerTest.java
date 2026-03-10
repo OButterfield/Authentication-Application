@@ -72,12 +72,11 @@ class SessionsControllerTest {
 		CreateSessionRequest profileRequest = new CreateSessionRequest();
 		profileRequest.setEmail(VALID_EMAIL);
 		profileRequest.setPassword(VALID_PASSWORD);
+		createdUserEmails.add(VALID_EMAIL);
 
 		String profileRequestBody = objectMapper.writeValueAsString(profileRequest);
 		mockMvc.perform(post("/profiles").contentType(MediaType.APPLICATION_JSON).content(profileRequestBody))
 				.andExpect(status().isCreated());
-
-		createdUserEmails.add(VALID_EMAIL);
 
 		// WHEN - Now attempt to login with the same credentials
 		long beforeRequest = System.currentTimeMillis();
@@ -91,7 +90,6 @@ class SessionsControllerTest {
 				.andExpect(jsonPath("$.data.sessionId").value(matchesPattern(UUID_PATTERN)))
 				.andExpect(jsonPath("$.data.profileId", notNullValue()))
 				.andExpect(jsonPath("$.data.profileId").value(matchesPattern(UUID_PATTERN)))
-				.andExpect(jsonPath("$.data.email").value(VALID_EMAIL))
 				.andExpect(jsonPath("$.data.expiryTime").exists()).andExpect(jsonPath("$.data.expiryTime").isNumber())
 				.andExpect(jsonPath("$.message").value("Login successful")).andReturn();
 
@@ -101,7 +99,6 @@ class SessionsControllerTest {
 		assert response.getData() != null;
 		assert response.getData().getExpiryTime() > beforeRequest;
 		assert response.getData().getProfileId() != null;
-		assert response.getData().getEmail().equals(VALID_EMAIL);
 	}
 
 	@Test
@@ -184,12 +181,11 @@ class SessionsControllerTest {
 		CreateSessionRequest profileRequest = new CreateSessionRequest();
 		profileRequest.setEmail(VALID_EMAIL);
 		profileRequest.setPassword(VALID_PASSWORD);
+		createdUserEmails.add(VALID_EMAIL);
 
 		String profileRequestBody = objectMapper.writeValueAsString(profileRequest);
 		mockMvc.perform(post("/profiles").contentType(MediaType.APPLICATION_JSON).content(profileRequestBody))
 				.andExpect(status().isCreated());
-
-		createdUserEmails.add(VALID_EMAIL);
 
 		// WHEN - Try to login with wrong password
 		validRequest.setPassword("WrongPassword123!");

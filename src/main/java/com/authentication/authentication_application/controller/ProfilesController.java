@@ -45,7 +45,6 @@ public class ProfilesController implements ProfilesApi {
 
 		Profile profile = new Profile();
 		profile.setProfileId(savedUser.getProfileId());
-		profile.setEmail(savedUser.getEmail());
 
 		ProfileResponse response = new ProfileResponse();
 		response.setData(profile);

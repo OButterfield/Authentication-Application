@@ -67,7 +67,7 @@ class ProfilesControllerTest {
 	void shouldCreateProfileWithAllRequiredFieldsAndValidFormats() throws Exception {
 		// GIVEN
 		String requestBody = objectMapper.writeValueAsString(validRequest);
-
+		createdUserEmails.add(validRequest.getEmail());
 		// WHEN
 		MvcResult result = mockMvc
 				.perform(post("/profiles").contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -75,7 +75,6 @@ class ProfilesControllerTest {
 				.andExpect(status().isCreated()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.data").exists()).andExpect(jsonPath("$.data.profileId", notNullValue()))
 				.andExpect(jsonPath("$.data.profileId").value(matchesPattern(UUID_PATTERN)))
-				.andExpect(jsonPath("$.data.email").value("test@example.com"))
 				.andExpect(jsonPath("$.message").value("User created successfully")).andReturn();
 
 		// Verify deserialization works correctly
@@ -83,9 +82,6 @@ class ProfilesControllerTest {
 		ProfileResponse response = objectMapper.readValue(content, ProfileResponse.class);
 		assert response.getData() != null;
 		assert response.getData().getProfileId() != null;
-		assert response.getData().getEmail().equals("test@example.com");
-
-		createdUserEmails.add(validRequest.getEmail());
 	}
 
 	@Test
@@ -99,17 +95,16 @@ class ProfilesControllerTest {
 		for (String testEmail : testEmails) {
 			validRequest.setEmail(testEmail);
 			String requestBody = objectMapper.writeValueAsString(validRequest);
-
+			createdUserEmails.add(testEmail);
 			// WHEN & THEN - Verify all response fields for each email
 			MvcResult result = mockMvc
 					.perform(post("/profiles").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-					.andExpect(status().isCreated()).andExpect(jsonPath("$.data.email").value(testEmail))
+					.andExpect(status().isCreated())
 					.andExpect(jsonPath("$.data.profileId").value(matchesPattern(UUID_PATTERN)))
 					.andExpect(jsonPath("$.message").value("User created successfully")).andReturn();
 
 			responses[index] = objectMapper.readValue(result.getResponse().getContentAsString(), ProfileResponse.class);
 
-			createdUserEmails.add(testEmail);
 			index++;
 		}
 
@@ -126,10 +121,9 @@ class ProfilesControllerTest {
 	void shouldRejectProfileCreationWithDuplicateEmail() throws Exception {
 		// GIVEN - Create first profile
 		String requestBody = objectMapper.writeValueAsString(validRequest);
+		createdUserEmails.add(validRequest.getEmail());
 		mockMvc.perform(post("/profiles").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(status().isCreated());
-
-		createdUserEmails.add(validRequest.getEmail());
 
 		// WHEN & THEN - Try to create another profile with same email
 		// Should return 400 Bad Request with generic message to prevent email

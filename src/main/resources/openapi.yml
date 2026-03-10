@@ -41,7 +41,6 @@ paths:
               example:
                 data:
                   profileId: 550e8400-e29b-41d4-a716-446655440000
-                  email: user@example.com
                 message: User created successfully
         '400':
           description: Invalid input (invalid email or password)
@@ -89,7 +88,6 @@ paths:
                 data:
                   sessionId: 550e8400-e29b-41d4-a716-446655440001
                   profileId: 550e8400-e29b-41d4-a716-446655440000
-                  email: user@example.com
                   expiryTime: 1709943109266
                 message: Login successful
         '400':
@@ -199,16 +197,12 @@ components:
       properties:
         profileId:
           $ref: '#/components/schemas/ProfileId'
-        email:
-          $ref: '#/components/schemas/Email'
 
     Session:
       type: object
       properties:
         profileId:
           $ref: '#/components/schemas/ProfileId'
-        email:
-          $ref: '#/components/schemas/Email'
         sessionId:
           $ref: '#/components/schemas/SessionId'
         expiryTime:
